@@ -34,22 +34,19 @@
 	[recognizer setMaximumNumberOfTouches:1];
     [recognizer setDelegate:manager];
     [controller.navigationBar addGestureRecognizer:recognizer];
-    [recognizer release];
-    
+
     recognizer = [[UIPanGestureRecognizer alloc] 
                   initWithTarget:manager action:@selector(navigationControllerPanned:)];
     [recognizer setMinimumNumberOfTouches:1];
 	[recognizer setMaximumNumberOfTouches:1];
     [recognizer setDelegate:manager];
     [controller.view addGestureRecognizer:recognizer];
-    [recognizer release];
-    
+
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] 
                                              initWithTarget:manager action:@selector(navigationControllerTapped:)];
     [tapRecognizer setDelegate:manager];
     [controller.view addGestureRecognizer:tapRecognizer];
-    [tapRecognizer release];
-    
+
     [controller.view.superview insertSubview:[menuController view] belowSubview:controller.view];
     
     [[NSNotificationCenter defaultCenter] addObserver:manager 
