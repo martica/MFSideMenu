@@ -57,6 +57,8 @@
     controller.view.layer.shadowOpacity = 0.75f;
     controller.view.layer.shadowRadius = 10.0f;
     controller.view.layer.shadowColor = [UIColor blackColor].CGColor;
+
+    [manager flipViewAccordingToStatusBarOrientation:nil];
 }
 
 
@@ -235,23 +237,29 @@
         case UIInterfaceOrientationPortraitUpsideDown:
             angle = M_PI; 
             newFrame.size.height -= statusBarSize.height;
+            newFrame.origin.x = newFrame.size.width-kSidebarWidth;
+            newFrame.size.width = kSidebarWidth;
             break;
         case UIInterfaceOrientationLandscapeLeft:
             angle = - M_PI / 2.0f;
             newFrame.origin.x += statusBarSize.width;
-            newFrame.size.width -= statusBarSize.width; 
+            newFrame.size.width -= statusBarSize.width;
+            newFrame.origin.y = newFrame.size.height-kSidebarWidth;
+            newFrame.size.height = kSidebarWidth;
             break;
         case UIInterfaceOrientationLandscapeRight:
             angle = M_PI / 2.0f;
             newFrame.size.width -= statusBarSize.width;
+            newFrame.size.height = kSidebarWidth;
             break;
         default: // as UIInterfaceOrientationPortrait
             angle = 0.0;
             newFrame.origin.y += statusBarSize.height;
             newFrame.size.height -= statusBarSize.height;
+            newFrame.size.width = kSidebarWidth;
             break;
     } 
-    
+
     self.sideMenuController.view.transform = CGAffineTransformMakeRotation(angle);
     self.sideMenuController.view.frame = newFrame;
     
