@@ -11,60 +11,56 @@
 @class SideMenuViewController;
 
 @interface UIViewController (MFSideMenuPrivate)
-- (void)toggleSideMenu:(BOOL)hidden;
+- (void)MFToggleSideMenu:(BOOL)hidden;
 @end
 
 @implementation UIViewController (MFSideMenu)
 
 static char menuStateKey;
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
-}
-
-- (void) toggleSideMenuPressed:(id)sender {
-    if(self.navigationController.menuState == MFSideMenuStateVisible) {
-        [self.navigationController setMenuState:MFSideMenuStateHidden];
+- (void) MFToggleSideMenuPressed:(id)sender {
+    if(self.navigationController.MFMenuState == MFSideMenuStateVisible) {
+        [self.navigationController setMFMenuState:MFSideMenuStateHidden];
     } else {
-        [self.navigationController setMenuState:MFSideMenuStateVisible];
+        [self.navigationController setMFMenuState:MFSideMenuStateVisible];
     }
 }
 
-- (void) backButtonPressed:(id)sender {
+- (void) MFBackButtonPressed:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void) setupSideMenuBarButtonItem {
-    if(self.navigationController.menuState == MFSideMenuStateVisible || 
+- (void) MFSetupSideMenuBarButtonItem {
+    if(self.navigationController.MFMenuState == MFSideMenuStateVisible ||
        [[self.navigationController.viewControllers objectAtIndex:0] isEqual:self]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
                                                  initWithImage:[UIImage imageNamed:@"menu-icon.png"] style:UIBarButtonItemStyleBordered 
-                                                 target:self action:@selector(toggleSideMenuPressed:)];
+                                                 target:self action:@selector(MFToggleSideMenuPressed:)];
     } else {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"back-arrow"]
-                                         style:UIBarButtonItemStyleBordered target:self action:@selector(backButtonPressed:)];
+                                         style:UIBarButtonItemStyleBordered target:self action:@selector(MFBackButtonPressed:)];
     }
 }
 
-- (void)setMenuState:(MFSideMenuState)menuState {
+- (void)setMFMenuState:(MFSideMenuState)menuState {
     if(![self isKindOfClass:[UINavigationController class]]) {
-        self.navigationController.menuState = menuState;
+        self.navigationController.MFMenuState = menuState;
         return;
     }
     
-    MFSideMenuState currentState = self.menuState;
+    MFSideMenuState currentState = self.MFMenuState;
     
     objc_setAssociatedObject(self, &menuStateKey, [NSNumber numberWithInt:menuState], OBJC_ASSOCIATION_RETAIN);
     
     switch (currentState) {
         case MFSideMenuStateHidden:
             if (menuState == MFSideMenuStateVisible) {
-                [self toggleSideMenu:NO];
+                [self MFToggleSideMenu:NO];
             }
             break;
         case MFSideMenuStateVisible:
             if (menuState == MFSideMenuStateHidden) {
-                [self toggleSideMenu:YES];
+                [self MFToggleSideMenu:YES];
             }
             break;
         default:
@@ -72,25 +68,25 @@ static char menuStateKey;
     }
 }
 
-- (MFSideMenuState)menuState {
+- (MFSideMenuState)MFMenuState {
     if(![self isKindOfClass:[UINavigationController class]]) {
-        return self.navigationController.menuState;
+        return self.navigationController.MFMenuState;
     }
     
     return (MFSideMenuState)[objc_getAssociatedObject(self, &menuStateKey) intValue];
 }
 
-- (void)animationFinished:(NSString *)animationID finished:(BOOL)finished context:(void *)context
+- (void)MFSideMenuAnimationFinished:(NSString *)animationID finished:(BOOL)finished context:(void *)context
 {
     if ([animationID isEqualToString:@"toggleSideMenu"])
     {
         if([self isKindOfClass:[UINavigationController class]]) {
             UINavigationController *controller = (UINavigationController *)self;
-            [controller.visibleViewController setupSideMenuBarButtonItem];
+            [controller.visibleViewController MFSetupSideMenuBarButtonItem];
             
             // disable user interaction on the current view controller
-            controller.visibleViewController.view.userInteractionEnabled = (self.menuState == MFSideMenuStateHidden);
-            [[MFSideMenuManager sharedManager] sideMenuController].view.userInteractionEnabled = (self.menuState != MFSideMenuStateHidden);
+            controller.visibleViewController.view.userInteractionEnabled = (self.MFMenuState == MFSideMenuStateHidden);
+            [[MFSideMenuManager sharedManager] sideMenuController].view.userInteractionEnabled = (self.MFMenuState != MFSideMenuStateHidden);
         }
     }
 }
@@ -102,12 +98,12 @@ static char menuStateKey;
 
 // TODO: alter the duration based on the current position of the menu
 // to provide a smoother animation
-- (void) toggleSideMenu:(BOOL)hidden {
+- (void) MFToggleSideMenu:(BOOL)hidden {
     if(![self isKindOfClass:[UINavigationController class]]) return;
     
     [UIView beginAnimations:@"toggleSideMenu" context:NULL];
     [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationFinished:finished:context:)];
+    [UIView setAnimationDidStopSelector:@selector(MFSideMenuAnimationFinished:finished:context:)];
     [UIView setAnimationDuration:kMenuAnimationDuration];
     
     CGRect frame = self.view.frame;

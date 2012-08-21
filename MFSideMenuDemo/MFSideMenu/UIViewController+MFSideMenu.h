@@ -14,9 +14,9 @@ typedef enum {
 
 @interface UIViewController (MFSideMenu)
 
-@property (nonatomic, assign) MFSideMenuState menuState;
+@property (nonatomic, assign) MFSideMenuState MFMenuState;
 
 // view controllers should call this on viewDidLoad in order to setup the proper UIBarButtonItem
-- (void) setupSideMenuBarButtonItem;
+- (void) MFSetupSideMenuBarButtonItem;
 
 @end

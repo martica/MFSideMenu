@@ -26,7 +26,7 @@
     manager.navigationController = controller;
     manager.sideMenuController = menuController;
     
-    [controller setMenuState:MFSideMenuStateHidden];
+    [controller setMFMenuState:MFSideMenuStateHidden];
     
     UIPanGestureRecognizer *recognizer = [[UIPanGestureRecognizer alloc] 
                                           initWithTarget:manager action:@selector(navigationBarPanned:)];
@@ -70,14 +70,14 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && 
-       self.navigationController.menuState != MFSideMenuStateHidden) return YES;
+       self.navigationController.MFMenuState != MFSideMenuStateHidden) return YES;
     
     if([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         if([gestureRecognizer.view isEqual:self.navigationController.view] && 
-           self.navigationController.menuState != MFSideMenuStateHidden) return YES;
+           self.navigationController.MFMenuState != MFSideMenuStateHidden) return YES;
         
         if([gestureRecognizer.view isEqual:self.navigationController.navigationBar] && 
-           self.navigationController.menuState == MFSideMenuStateHidden) return YES;
+           self.navigationController.MFMenuState == MFSideMenuStateHidden) return YES;
     }
     return NO;
 }
@@ -88,8 +88,8 @@
 }
 
 - (void) navigationControllerTapped:(id)sender {
-    if(self.navigationController.menuState != MFSideMenuStateHidden) {
-        [self.navigationController setMenuState:MFSideMenuStateHidden];
+    if(self.navigationController.MFMenuState != MFSideMenuStateHidden) {
+        [self.navigationController setMFMenuState:MFSideMenuStateHidden];
     }
 }
 
@@ -186,17 +186,17 @@
         CGFloat finalX = translatedPoint.x + (.35*velocity.x);
         CGFloat viewWidth = [self widthAdjustedForInterfaceOrientation:view]; 
         
-        if(self.navigationController.menuState == MFSideMenuStateHidden) {
+        if(self.navigationController.MFMenuState == MFSideMenuStateHidden) {
             if(finalX > viewWidth/2) {
-                [self.navigationController setMenuState:MFSideMenuStateVisible];
+                [self.navigationController setMFMenuState:MFSideMenuStateVisible];
             } else {
                 [UIView beginAnimations:nil context:NULL];
                 [self setNavigationControllerOffset:0];
                 [UIView commitAnimations];
             }
-        } else if(self.navigationController.menuState == MFSideMenuStateVisible) {
+        } else if(self.navigationController.MFMenuState == MFSideMenuStateVisible) {
             if(finalX < [self xAdjustedForInterfaceOrientation:originalOrigin]) {
-                [self.navigationController setMenuState:MFSideMenuStateHidden];
+                [self.navigationController setMFMenuState:MFSideMenuStateHidden];
             } else {
                 [UIView beginAnimations:nil context:NULL];
                 [self setNavigationControllerOffset:[self xAdjustedForInterfaceOrientation:originalOrigin]]; 
@@ -207,13 +207,13 @@
 }
 
 - (void) navigationControllerPanned:(id)sender {
-    if(self.navigationController.menuState == MFSideMenuStateHidden) return;
+    if(self.navigationController.MFMenuState == MFSideMenuStateHidden) return;
     
     [self handleNavigationBarPan:sender];
 }
 
 - (void) navigationBarPanned:(id)sender {
-    if(self.navigationController.menuState != MFSideMenuStateHidden) return;
+    if(self.navigationController.MFMenuState != MFSideMenuStateHidden) return;
     
     [self handleNavigationBarPan:sender];
 }
@@ -263,8 +263,8 @@
     self.sideMenuController.view.transform = CGAffineTransformMakeRotation(angle);
     self.sideMenuController.view.frame = newFrame;
     
-    if(self.navigationController.menuState == MFSideMenuStateVisible) {
-        [self.navigationController setMenuState:MFSideMenuStateHidden];
+    if(self.navigationController.MFMenuState == MFSideMenuStateVisible) {
+        [self.navigationController setMFMenuState:MFSideMenuStateHidden];
     }
     
     self.navigationController.view.layer.shadowOpacity = 0.75f;
