@@ -90,6 +90,7 @@ static char menuStateKey;
             
             // disable user interaction on the current view controller
             controller.visibleViewController.view.userInteractionEnabled = (self.menuState == MFSideMenuStateHidden);
+            [[MFSideMenuManager sharedManager] sideMenuController].view.userInteractionEnabled = (self.menuState != MFSideMenuStateHidden);
         }
     }
 }
