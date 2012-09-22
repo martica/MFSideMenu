@@ -100,7 +100,11 @@ static char menuStateKey;
 // to provide a smoother animation
 - (void) MFToggleSideMenu:(BOOL)hidden {
     if(![self isKindOfClass:[UINavigationController class]]) return;
-    
+
+    if (hidden) {
+        [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
+    }
+
     [UIView beginAnimations:@"toggleSideMenu" context:NULL];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(MFSideMenuAnimationFinished:finished:context:)];
