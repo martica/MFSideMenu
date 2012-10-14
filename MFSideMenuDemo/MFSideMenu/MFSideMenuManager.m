@@ -227,6 +227,11 @@
      therefore no animation is needed to perform this nice transition. 
      */
     
+    if (!self.sideMenuController.view.window) {
+        // if there isn't a window yet, bail out...
+        return;
+    }
+    
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     
     CGFloat angle = 0.0;
